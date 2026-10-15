@@ -7,7 +7,11 @@ import java.util.Arrays;
 
 public class PlanoCartesiano implements Plotador {
 
-    private final int[][] cores = new int[Config.LINHAS][Config.COLUNAS];
+    private int xMin;
+    private int xMax;
+    private int yMin;
+    private int yMax;
+    private int[][] cores;
     private int corAtual = Config.COR_FIGURA;
 
     public PlanoCartesiano() {
@@ -19,7 +23,7 @@ public class PlanoCartesiano implements Plotador {
         if (!contem(x, y)) {
             return;
         }
-        cores[Config.Y_MAX - y][x - Config.X_MIN] = corAtual;
+        cores[yMax - y][x - xMin] = corAtual;
     }
 
     public void definirCor(int rgb) {
@@ -27,27 +31,66 @@ public class PlanoCartesiano implements Plotador {
     }
 
     public boolean contem(int x, int y) {
-        return x >= Config.X_MIN && x <= Config.X_MAX
-                && y >= Config.Y_MIN && y <= Config.Y_MAX;
+        return x >= xMin && x <= xMax && y >= yMin && y <= yMax;
     }
 
     public void limpar() {
-        for (int[] linha : cores) {
-            Arrays.fill(linha, Config.COR_FUNDO);
-        }
-        desenharEixos();
+        xMin = Config.X_MIN;
+        xMax = Config.X_MAX;
+        yMin = Config.Y_MIN;
+        yMax = Config.Y_MAX;
+        cores = alocar(xMin, xMax, yMin, yMax);
     }
 
-    public void desenharEixos() {
-        for (int x = Config.X_MIN; x <= Config.X_MAX; x++) {
-            cores[Config.Y_MAX][x - Config.X_MIN] = Config.COR_EIXOS;
+    public void ajustarLimites(int novoXMin, int novoXMax, int novoYMin, int novoYMax) {
+        novoXMin = limitar(novoXMin);
+        novoXMax = limitar(novoXMax);
+        novoYMin = limitar(novoYMin);
+        novoYMax = limitar(novoYMax);
+        if (novoXMin == xMin && novoXMax == xMax && novoYMin == yMin && novoYMax == yMax) {
+            return;
         }
-        for (int y = Config.Y_MIN; y <= Config.Y_MAX; y++) {
-            cores[Config.Y_MAX - y][-Config.X_MIN] = Config.COR_EIXOS;
+        int[][] novo = alocar(novoXMin, novoXMax, novoYMin, novoYMax);
+        int deX = Math.max(xMin, novoXMin);
+        int ateX = Math.min(xMax, novoXMax);
+        int deY = Math.max(yMin, novoYMin);
+        int ateY = Math.min(yMax, novoYMax);
+        if (deX <= ateX) {
+            for (int y = deY; y <= ateY; y++) {
+                System.arraycopy(cores[yMax - y], deX - xMin, novo[novoYMax - y], deX - novoXMin, ateX - deX + 1);
+            }
         }
+        cores = novo;
+        xMin = novoXMin;
+        xMax = novoXMax;
+        yMin = novoYMin;
+        yMax = novoYMax;
     }
+
+    public void ampliarPara(int minX, int maxX, int minY, int maxY) {
+        ajustarLimites(Math.min(xMin, minX), Math.max(xMax, maxX), Math.min(yMin, minY), Math.max(yMax, maxY));
+    }
+
+    public int getXMin() { return xMin; }
+    public int getXMax() { return xMax; }
+    public int getYMin() { return yMin; }
+    public int getYMax() { return yMax; }
+    public int getColunas() { return xMax - xMin + 1; }
+    public int getLinhas() { return yMax - yMin + 1; }
 
     public int cor(int coluna, int linha) {
         return cores[linha][coluna];
+    }
+
+    private static int limitar(int valor) {
+        return Math.max(-Config.LIMITE_PLANO, Math.min(Config.LIMITE_PLANO, valor));
+    }
+
+    private static int[][] alocar(int minX, int maxX, int minY, int maxY) {
+        int[][] novo = new int[maxY - minY + 1][maxX - minX + 1];
+        for (int[] linha : novo) {
+            Arrays.fill(linha, Config.COR_FUNDO);
+        }
+        return novo;
     }
 }

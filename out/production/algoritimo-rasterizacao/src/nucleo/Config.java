@@ -18,6 +18,9 @@ public final class Config {
     public static final int LARGURA_TELA = COLUNAS * ESCALA;
     public static final int ALTURA_TELA = LINHAS * ESCALA;
 
+    public static final int LIMITE_PLANO = 1000;
+    public static final int MARGEM = 5;
+
     public static final int COR_FUNDO = 0xFFFFFF;
     public static final int COR_EIXOS = 0x000000;
     public static final int COR_FIGURA = 0xD32F2F;

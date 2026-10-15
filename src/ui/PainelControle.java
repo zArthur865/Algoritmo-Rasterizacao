@@ -4,6 +4,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,8 +19,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.BorderLayout;
-
 
 public class PainelControle extends JPanel {
 
@@ -44,6 +43,8 @@ public class PainelControle extends JPanel {
             new JComboBox<>(new String[]{"DDA", "Ponto médio"});
     private final JComboBox<String> listaCircunferencia =
             new JComboBox<>(new String[]{"Polinomial", "Trigonométrico", "Ponto médio"});
+
+    private final JCheckBox caixaPixelReal = new JCheckBox("Pixel real (1 ponto = 1 pixel da tela)");
 
     private final JButton botaoDesenhar = new JButton("Desenhar");
     private final JButton botaoLimpar = new JButton("Limpar");
@@ -75,11 +76,14 @@ public class PainelControle extends JPanel {
         add(painelCartoes, c);
 
         c.gridy = 3;
+        add(caixaPixelReal, c);
+
+        c.gridy = 4;
         add(criarBotoes(), c);
 
         JLabel rotulo = new JLabel("Mensagens e nº de pixels");
         rotulo.setForeground(Color.GRAY);
-        c.gridy = 4;
+        c.gridy = 5;
         c.insets = new Insets(0, 0, 4, 0);
         add(rotulo, c);
 
@@ -88,7 +92,7 @@ public class PainelControle extends JPanel {
         areaMensagens.setWrapStyleWord(true);
         areaMensagens.setMargin(new Insets(6, 6, 6, 6));
         areaMensagens.setBackground(new Color(0xF7F7F7));
-        c.gridy = 5;
+        c.gridy = 6;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 0, 0, 0);
@@ -96,8 +100,6 @@ public class PainelControle extends JPanel {
 
         configurarEventosInternos();
     }
-
-    // ---------------------------------------------------------------- montagem
 
     private JPanel criarSeletorDeModo() {
         ButtonGroup grupo = new ButtonGroup();
@@ -185,20 +187,28 @@ public class PainelControle extends JPanel {
         botaoReta.addActionListener(e -> cartoes.show(painelCartoes, CARTAO_RETA));
         botaoCircunferencia.addActionListener(e -> cartoes.show(painelCartoes, CARTAO_CIRCUNFERENCIA));
 
-        // Enter em qualquer campo equivale a clicar em Desenhar
         for (JTextField campo : new JTextField[]{campoX1, campoY1, campoX2, campoY2,
                 campoXc, campoYc, campoRaio}) {
             campo.addActionListener(e -> botaoDesenhar.doClick());
         }
     }
 
-    // ----------------------------------------------------- contrato para o controle
+    public boolean isPixelReal() {
+        return caixaPixelReal.isSelected();
+    }
+
+    public void definirPixelReal(boolean valor) {
+        caixaPixelReal.setSelected(valor);
+    }
+
+    public void aoAlterarPixelReal(Runnable acao) {
+        caixaPixelReal.addActionListener(e -> acao.run());
+    }
 
     public boolean isModoReta() {
         return botaoReta.isSelected();
     }
 
-    // Os getters devolvem o texto digitado; quem converte em inteiro é o ValidadorEntrada.
     public String getX1() { return campoX1.getText(); }
     public String getY1() { return campoY1.getText(); }
     public String getX2() { return campoX2.getText(); }

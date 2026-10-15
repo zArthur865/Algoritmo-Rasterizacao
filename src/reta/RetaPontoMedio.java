@@ -6,11 +6,11 @@ import nucleo.Registro;
 public class RetaPontoMedio implements AlgoritmoReta{
     @Override
     public String nome() {
-        return "RetaPontoMedio";
+        return "Ponto médio";
     }
 
     @Override
-    public void drawPixel(int x1, int y1, int x2, int y2, Plotador p, Registro r) {
+    public void desenhar(int x1, int y1, int x2, int y2, Plotador p, Registro r) {
 
         TransformacaoOitante t = new TransformacaoOitante(x1, y1, x2, y2);
         int x = t.getX1();
@@ -47,5 +47,4 @@ public class RetaPontoMedio implements AlgoritmoReta{
         p.setPixel(o[0], o[1]);
         r.passo("Passo " + k + ": d = " + d + "; ponto (" + o[0] + "," + o[1] + ")");
     }
-
 }

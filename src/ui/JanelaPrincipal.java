@@ -6,12 +6,10 @@ import grafico.PlanoCartesiano;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 
-/**
- * Janela principal: painel de controle à esquerda; área de desenho e console
- * de cálculos à direita. Só monta e expõe os componentes; quem liga os botões
- * aos algoritmos é o controle.
- */
 public class JanelaPrincipal extends JFrame {
 
     private final PlanoCartesiano plano = new PlanoCartesiano();
@@ -32,7 +30,8 @@ public class JanelaPrincipal extends JFrame {
         add(direita, BorderLayout.CENTER);
 
         pack();
-        setResizable(false);
+        Rectangle tela = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        setSize(new Dimension(Math.min(getWidth(), tela.width), Math.min(getHeight(), tela.height)));
         setLocationRelativeTo(null);
     }
 

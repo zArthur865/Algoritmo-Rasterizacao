@@ -13,11 +13,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 
-/**
- * Console de cálculos: mostra, linha a linha, os passos que os algoritmos
- * registram (d, x, y, ponto), como no console de uma IDE.
- * Implementa Registro, então pode ser passado direto aos algoritmos.
- */
 public class PainelConsole extends JPanel implements Registro {
 
     private final JTextArea area = new JTextArea();
@@ -35,7 +30,6 @@ public class PainelConsole extends JPanel implements Registro {
         add(new JScrollPane(area), BorderLayout.CENTER);
     }
 
-    /** Acrescenta uma linha ao console e rola até ela. */
     @Override
     public void passo(String texto) {
         executarNaThreadDaTela(() -> {
@@ -44,7 +38,6 @@ public class PainelConsole extends JPanel implements Registro {
         });
     }
 
-    /** Apaga todas as linhas. */
     public void limpar() {
         executarNaThreadDaTela(() -> area.setText(""));
     }
